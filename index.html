@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Exaroton Server Control</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+    button { font-size: 20px; margin: 10px; padding: 10px 20px; }
+    #status { margin-top: 30px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>🎮 Exaroton Server Control</h1>
+  <button onclick="startServer()">🟢 Start Server</button>
+  <button onclick="stopServer()">🔴 Stop Server</button>
+  <div id="status">Status: Idle</div>
+
+  <script>
+    const serverId = 'DPv0T8sPoyrNyENN'; // your server ID
+    const baseUrl = 'https://api.exaroton.com/v1/server/';
+    const apiKey = 'jKtAdXoK3L4FJ04uHxeFzqcZIrr05q101dBhqs6adZE99267kMVmGF60NiLP0VFXLoceKUd1kS8V8LeBdClYSeADhDjVJxHQr4Bx'; // REPLACE with your API key
+
+    async function startServer() {
+      await sendRequest('start');
+    }
+
+    async function stopServer() {
+      await sendRequest('stop');
+    }
+
+    async function sendRequest(action) {
+      const url = `${baseUrl}${serverId}/${action}`;
+      document.getElementById('status').innerText = `Sending ${action.toUpperCase()} request...`;
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const result = await response.json();
+        document.getElementById('status').innerText = `Response: ${response.status} - ${result.message || 'Check console for details'}`;
+        console.log(result);
+      } catch (error) {
+        console.error(error);
+        document.getElementById('status').innerText = `Error: ${error.message}`;
+      }
+    }
+  </script>
+</body>
+</html>
